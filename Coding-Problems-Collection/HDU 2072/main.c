@@ -35,6 +35,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define initialised(node) (node != NULL)
+
 typedef struct trieNode{
     char letter;
     int isEnd;
@@ -90,20 +92,61 @@ void trieInsert (char* string){
     (*buffer).isEnd = 1;
 }
 
-//void trieSearch(char* target){
-//    int found = 0;
-//    int offset = 0;
-//    trieNode* check = &trieRoot;
-//    while((*target + offset) != '\0'){
-//
-//    }
-//}
+/*Refactor Required to enhance the logic and readability*/
+int trieSearch(char* target){
+    int found = 1;
+    int offset = 0;
+    trieNode* check = trieRoot.leftChild;
+    trieNode* temp = check;
+    if(initialised(check)){
+        while((*(target + offset)) != '\0'){
+            int foundLetter = 0;
+            while(check != NULL){
+                if((*check).letter == (*(target + offset))){
+                    /*Case: A single letter matches with the target string*/
+                    foundLetter = 1;
+                    temp = check;
+                    break;
+                }
+                temp = check;
+                check = (*check).right;
+            }
+            if(foundLetter == 0){
+                found = 0;
+                break;
+            }else{
+                /*Update the node to the corresponding child one for the upcoming check*/
+                if((*temp).leftChild != NULL){
+                    check = (*temp).leftChild;
+                }else{
+                    check = NULL;
+                }
+            }
+            offset ++;
+        }
+    }else{          /*Case: No node has been inserted in the trie tree*/
+        found = 0;
+    }
+    if(initialised(check)){
+        if((*temp).isEnd == 0){
+            found = 0;
+        }
+    }
+    return found;
+}
+
+/*A free function is required to prevent the memory leak*/
 
 int main(int argc, const char* argv[]){
-    char string[3][16];
+    char string[2][16];
+    char target[16];
     for(int counter = 0; counter < 3; counter ++){
         scanf("%s", string[counter]);
         trieInsert(string[counter]);
     }
+    printf("Type the target string: ");
+    scanf("%s", target);
+    int result = trieSearch(target);
+    printf("%d",result);
     return 0;
 }
