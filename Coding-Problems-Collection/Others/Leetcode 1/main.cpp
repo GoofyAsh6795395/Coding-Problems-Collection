@@ -5,10 +5,6 @@
 //  Created by 朱欣瑞 on 2025/06/27.
 //
 
-
-
-
-
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
